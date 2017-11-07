@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 /**
  * @file    MKL25Z128xxx4_Project.c
  * @brief   Application entry point.
@@ -39,30 +39,48 @@
 #include "MKL25Z4.h"
 
 /* TODO: insert other include files here. */
-#include "app_GPIO.h"
+#include "app_Init.h"
+#include "app_PIT.h"
+#include "app_BtnDbnc.h"
+#include "app_LED.h"
 
 /* TODO: insert other definitions and declarations here. */
 
 /*
  * @brief   Application entry point.
  */
-int main(void) {
-  	/* Init board hardware. */
-    BOARD_InitBootPins();
-    BOARD_BootClockRUN();
-  	/* Init FSL debug console. */
+int main(void)
+{
+	/* Init board hardware. */
+	BOARD_InitBootPins();
+	BOARD_BootClockRUN();
+	/* Init FSL debug console. */
 	BOARD_InitDebugConsole();
 
-    printf("Hello World\n");
+	printf("SW Embedded Tutorials\n");
 
-    app_GPIO_Init();
+	/* Initialization App */
+	app_Init();
 
-    /* Force the counter to be placed into memory. */
-    volatile static int i = 0 ;
-    /* Enter an infinite loop, just incrementing a counter. */
-    while(1) {
-        i++ ;
-        app_GPIO_GetPinValue(GPIOC, 9U);
-    }
-    return 0 ;
+	//Infinite Loop
+	for(;;)
+	{
+		if(rub_PITAlarm == TRUE)
+		{
+			/* Clear the Alarm */
+			rub_PITAlarm = FALSE;
+
+			/* Functions Executed Every Loop */
+			app_BtnDbnc_TaskMngr();
+
+			/* Functions Called when the timer expires */
+			//Every 1 ms
+			app_LED_Task();
+		}
+		else
+		{
+			/* Do Nothing */
+		}
+	}
+	return 0 ;
 }
