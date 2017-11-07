@@ -7,6 +7,7 @@
 
 #ifndef APLICACION_APP_GPIO_H_
 #define APLICACION_APP_GPIO_H_
+
 #include "stdtypedef.h"
 
 extern void app_GPIO_init(void);

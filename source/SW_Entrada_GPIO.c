@@ -53,7 +53,7 @@ int main(void) {
     BOARD_InitBootClocks();
   	/* Init FSL debug console. */
 	BOARD_InitDebugConsole();
-
+	app_GPIO_init();
     printf("Hello World\n");
 
     /* Force the counter to be placed into memory. */

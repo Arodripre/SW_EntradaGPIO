@@ -15,13 +15,14 @@ void app_GPIO_init(void)
 {
 	/*Habilitar relojes de los modulos necesarios*/
 
+	CLOCK_EnableClock(kCLOCK_PortB);
 	CLOCK_EnableClock(kCLOCK_PortC);
 	port_pin_config_t ls_PinConfig;
 	ls_PinConfig.mux = kPORT_MuxAsGpio;
 	port_pin_config_t *lps_PinConfig;
 	lps_PinConfig = &ls_PinConfig;
 	PORT_SetPinConfig(PORTC, 9u, lps_PinConfig);
-
+	PORT_SetPinConfig(PORTB, 19u, lps_PinConfig);
 
 	/*configuracion del gpio para que el puerto c9*/
 	gpio_pin_config_t ls_GPIOPinConfig;
@@ -31,6 +32,11 @@ void app_GPIO_init(void)
 	lps_GPIOPinConfig = &ls_GPIOPinConfig;
 
 	GPIO_PinInit(GPIOC, 9u, lps_GPIOPinConfig);
+
+	ls_GPIOPinConfig.pinDirection=kGPIO_DigitalOutput;
+	ls_GPIOPinConfig.pinDirection=TRUE;
+	GPIO_PinInit(GPIOB, 19u, lps_GPIOPinConfig);
+
 }
 
 T_UBYTE app_GPIO_GetPinValue(GPIO_Type *lps_BaseAddress, T_UBYTE lub_PinNumber)
@@ -41,10 +47,10 @@ T_UBYTE app_GPIO_GetPinValue(GPIO_Type *lps_BaseAddress, T_UBYTE lub_PinNumber)
 
 		if(lub_PinValue == TRUE)
 		{
-			printf("TRUE");
+			GPIO_ClearPinsOutput(GPIOB, 1u << 19u);
 		}
 		else
 		{
-			printf("FALSE");
+			GPIO_SetPinsOutput(GPIOB, 1u << 19u);
 		}
 }

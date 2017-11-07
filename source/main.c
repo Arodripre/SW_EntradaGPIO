@@ -27,33 +27,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-/**
- * @file    board.c
- * @brief   Board initialization file.
- */
  
-/* This is a template for board specific configuration created by MCUXpresso IDE Project Wizard.*/
-
-#include <stdint.h>
-#include "board.h"
-#include "fsl_debug_console.h"
-#include "fsl_common.h"
-
 /**
- * @brief Set up and initialize all required blocks and functions related to the board hardware.
+ * @file    MKL25Z128xxx4_Project.c
+ * @brief   Application entry point.
  */
-void BOARD_InitDebugConsole(void) {
-	/* The user initialization should be placed here */
-    uint32_t uartClkSrcFreq;
-    /* SIM_SOPT2[27:26]:
-     *  00: Clock Disabled
-     *  01: IRC48M
-     *  10: OSCERCLK
-     *  11: MCGIRCCLK
-     */
-    CLOCK_SetLpsci0Clock(1);
+#include <stdio.h>
+#include "board.h"
+#include "pin_mux.h"
+#include "clock_config.h"
+#include "MKL25Z4.h"
 
-    uartClkSrcFreq = BOARD_DEBUG_UART_CLK_FREQ;
-    DbgConsole_Init(BOARD_DEBUG_UART_BASEADDR, BOARD_DEBUG_UART_BAUDRATE, BOARD_DEBUG_UART_TYPE, uartClkSrcFreq);
+/* TODO: insert other include files here. */
+#include "app_GPIO.h"
+
+/* TODO: insert other definitions and declarations here. */
+
+/*
+ * @brief   Application entry point.
+ */
+int main(void) {
+  	/* Init board hardware. */
+    BOARD_InitBootPins();
+    BOARD_BootClockRUN();
+  	/* Init FSL debug console. */
+	BOARD_InitDebugConsole();
+
+    printf("Hello World\n");
+
+    app_GPIO_Init();
+
+    /* Force the counter to be placed into memory. */
+    volatile static int i = 0 ;
+    /* Enter an infinite loop, just incrementing a counter. */
+    while(1) {
+        i++ ;
+        app_GPIO_GetPinValue(GPIOC, 9U);
+    }
+    return 0 ;
 }
